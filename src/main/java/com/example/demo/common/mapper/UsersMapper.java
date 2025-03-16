@@ -3,6 +3,7 @@ package com.example.demo.common.mapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import com.example.demo.common.entity.Users;
 
@@ -14,4 +15,7 @@ public interface UsersMapper {
 
     @Delete("truncate table users")
     void truncate();
+
+    @Select("select * from users")
+    Users selectAll();
 }
