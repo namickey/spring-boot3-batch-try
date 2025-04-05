@@ -1,4 +1,4 @@
-package com.example.demo.batch.db2file;
+package com.example.demo.batch.master.user.send;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.builder.MyBatisCursorItemReaderBuilder;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserExportConfig {
+public class ExportUsersConfig {
 
     private final JobRepository jobRepository;
     private final JobListener jobListener;
@@ -33,8 +33,8 @@ public class UserExportConfig {
     private final PlatformTransactionManager platformTransactionManager;
     private final BatchChunkListener batchChunkListener;
 
-    private final UserExportProcessor userExportProcessor;
-    private final UserExportFieldExtractor userExportFieldExtractor;
+    private final ExportUsersProcessor userExportProcessor;
+    private final ExportUsersFieldExtractor userExportFieldExtractor;
 
     @Bean
     public ItemReader<? extends Users> userExportReader() {
@@ -46,8 +46,8 @@ public class UserExportConfig {
     }
 
     @Bean
-    public FlatFileItemWriter<Users> userExportWriter() {
-        return new FlatFileItemWriterBuilder<Users>()
+    public FlatFileItemWriter<ExportUsersItem> userExportWriter() {
+        return new FlatFileItemWriterBuilder<ExportUsersItem>()
                 .encoding("UTF-8")
                 .name("userExportWriter")
                 .saveState(false)
@@ -61,17 +61,17 @@ public class UserExportConfig {
     }
 
     @Bean
-    public Job userExportJob() {
-        return new JobBuilder("userExportJob", jobRepository)
-                .start(userExportStep1())
-                //.listener(jobListener)
+    public Job exportUsersJob() {
+        return new JobBuilder("exportUsersJob", jobRepository)
+                .start(exportUsersStep1())
+                .listener(jobListener)
                 .build();
     }
 
     @Bean
-    public Step userExportStep1() {
-        return new StepBuilder("userExportStep1", jobRepository)
-                .<Users, Users>chunk(10, platformTransactionManager)
+    public Step exportUsersStep1() {
+        return new StepBuilder("exportUsersStep1", jobRepository)
+                .<Users, ExportUsersItem>chunk(10, platformTransactionManager)
                 .reader(userExportReader())
                 .processor(userExportProcessor)
                 .writer(userExportWriter())

@@ -1,16 +1,14 @@
-package com.example.demo.batch.db2file;
+package com.example.demo.batch.master.user.send;
 
 import org.springframework.batch.item.file.transform.FieldExtractor;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.common.entity.Users;
-
 @Component
-public class UserExportFieldExtractor implements FieldExtractor<Users> {
+public class ExportUsersFieldExtractor implements FieldExtractor<ExportUsersItem> {
 
     @SuppressWarnings("null")
     @Override
-    public Object[] extract(Users item) {
+    public Object[] extract(ExportUsersItem item) {
         return new Object[] {
                 item.getId().toString(),
                 item.getName(),

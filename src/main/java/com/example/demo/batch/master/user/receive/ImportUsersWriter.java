@@ -1,4 +1,4 @@
-package com.example.demo.batch.file2db.csv01;
+package com.example.demo.batch.master.user.receive;
 
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class UserImportWriter implements ItemWriter<Users> {
+public class ImportUsersWriter implements ItemWriter<Users> {
     
     private final UsersMapper usersMapper;
 

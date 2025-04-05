@@ -1,4 +1,4 @@
-package com.example.demo.batch.file2db.csv01;
+package com.example.demo.batch.master.user.receive;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -25,35 +25,35 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserImportConfig {
+public class ImportUsersConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final BatchChunkListener batchChunkListener;
     private final JobListener jobListener;
 
-    private final UserImportProcessor userImportProcessor;
-    private final UserImportWriter userImportWriter;
+    private final ImportUsersProcessor userImportProcessor;
+    private final ImportUsersWriter userImportWriter;
     private final UsersMapper usersMapper;
     
     @Bean
-    public FlatFileItemReader<CsvUser> reader() {
+    public FlatFileItemReader<ImportUsersItem> reader() {
         
-        FlatFileItemReader<CsvUser> reader = new FlatFileItemReader<>();
+        FlatFileItemReader<ImportUsersItem> reader = new FlatFileItemReader<>();
 
         // ヘッダー行をスキップ
         reader.setLinesToSkip(1);
         reader.setResource(new FileSystemResource("input-data/user.csv"));
-        reader.setLineMapper(new DefaultLineMapper<CsvUser>() {
+        reader.setLineMapper(new DefaultLineMapper<ImportUsersItem>() {
             {
                 setLineTokenizer(new DelimitedLineTokenizer() {
                     {
                         setNames("id", "name", "department", "createdAt");
                     }
                 });
-                setFieldSetMapper(new BeanWrapperFieldSetMapper<CsvUser>() {
+                setFieldSetMapper(new BeanWrapperFieldSetMapper<ImportUsersItem>() {
                     {
-                        setTargetType(CsvUser.class);
+                        setTargetType(ImportUsersItem.class);
                     }
                 });
             }
@@ -70,26 +70,26 @@ public class UserImportConfig {
     }
 
     @Bean
-    public Job fishShopJob() {
-        return new JobBuilder("csv01job", jobRepository)
-                .start(step1())
-                .next(step2())
+    public Job importUsersJob() {
+        return new JobBuilder("importUsersJob", jobRepository)
+                .start(importUsersStep1())
+                .next(importUsersStep2())
                 .listener(jobListener)
                 .build();
     }
 
     @Bean
-    public Step step1() {
-        return new StepBuilder("step1", jobRepository)
+    public Step importUsersStep1() {
+        return new StepBuilder("importUsersStep1", jobRepository)
                 .tasklet(trancateTasklet(), platformTransactionManager)
                 .allowStartIfComplete(true)
                 .build();
     }
 
     @Bean
-    public Step step2() {
-        return new StepBuilder("step2", jobRepository)
-                .<CsvUser, Users>chunk(10, platformTransactionManager)
+    public Step importUsersStep2() {
+        return new StepBuilder("importUsersStep2", jobRepository)
+                .<ImportUsersItem, Users>chunk(10, platformTransactionManager)
                 .reader(reader())
                 .processor(userImportProcessor)
                 .writer(userImportWriter)

@@ -1,4 +1,4 @@
-package com.example.demo.batch.file2db.csv01;
+package com.example.demo.batch.master.user.send;
 
 import java.time.LocalDate;
 import com.example.demo.common.entity.Users;
@@ -6,7 +6,7 @@ import com.example.demo.common.entity.Users;
 import lombok.Data;
 
 @Data
-public class CsvUser {
+public class ExportUsersItem {
 
     private Integer id;
     private String name;
