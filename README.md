@@ -53,9 +53,9 @@ Spring-Bootでバッチアプリケーション開発
 > Git Bashって使ってる？Windowsで動く意外にすごい便利ツール  
 > https://www.sejuku.net/blog/72673  
 
+
 ## ディレクトリ階層
 
-今回、作成するアプリケーションのディレクトリ階層
 ```
 C:.
 │  .gitattributes
@@ -68,16 +68,13 @@ C:.
 ├─.mvn
 │  └─wrapper
 │          maven-wrapper.properties
+├─.vscode
+│      settings.json
 ├─h2db
 │      .gitkeep
 │      h2-2.3.232.jar
 │      testdb.mv.db
 │      testdb.trace.db
-├─input-data
-│      user.csv
-├─output-data
-│      .gitkeep
-│      users.csv
 ├─src
 │  ├─main
 │  │  ├─java
@@ -85,54 +82,27 @@ C:.
 │  │  │      └─example
 │  │  │          └─demo
 │  │  │              │  DemoApplication.java
-│  │  │              │
 │  │  │              ├─batch
 │  │  │              │  └─master
 │  │  │              │      └─user
-│  │  │              │          ├─receive
-│  │  │              │          │      ImportUsersConfig.java
-│  │  │              │          │      ImportUsersItem.java
-│  │  │              │          │      ImportUsersProcessor.java
-│  │  │              │          │      ImportUsersWriter.java
-│  │  │              │          │
-│  │  │              │          └─send
-│  │  │              │                  ExportUsersConfig.java
-│  │  │              │                  ExportUsersFieldExtractor.java
-│  │  │              │                  ExportUsersItem.java
-│  │  │              │                  ExportUsersProcessor.java
-│  │  │              │
-│  │  │              ├─common
-│  │  │              │  ├─entity
-│  │  │              │  │      Users.java
-│  │  │              │  │
-│  │  │              │  └─mapper
-│  │  │              │          UsersMapper.java
-│  │  │              │
-│  │  │              └─core
-│  │  │                  ├─config
-│  │  │                  │      BatchConfiguration.java
-│  │  │                  │      BatchExitCodeGenerator.java
-│  │  │                  │
-│  │  │                  ├─exception
-│  │  │                  │      AppException.java
-│  │  │                  │      BatchSkipPolicy.java
-│  │  │                  │
-│  │  │                  └─listener
-│  │  │                          BatchChunkListener.java
-│  │  │                          JobListener.java
-│  │  │
+│  │  │              │          ├─chunk
+│  │  │              │          │      UsersConfig.java
+│  │  │              │          │      UsersProcessor.java
+│  │  │              │          │      UsersWriter.java
+│  │  │              │          └─tasklet
+│  │  │              │                  SampleConfig.java
+│  │  │              └─common
+│  │  │                  ├─entity
+│  │  │                  │      Users.java
+│  │  │                  └─mapper
+│  │  │                          UsersMapper.java
 │  │  └─resources
 │  │          application.properties
+│  │          data-all.sql
 │  │          schema-all.sql
 ```
 
 ## アプリケーションの構造
-
-![アプリケーションの構造](app.png)
-* Readerで、1行ずつデータを読み込み、Processerに渡す。
-* Processerでは、1行ずつデータ加工を行う。ここでは入力データや出力データにはアクセスしない。
-* Writerでは、複数行を受け取り、一括で書き込みを行う。
-* Configは上記を取りまとめる設定クラス。ジョブやステップの制御も行う。
 
 ## 準備 githubからソースコードを取得
 
@@ -148,42 +118,28 @@ cd spring-boot3-batch-try
 実行する
 ```shell
 コマンドプロンプトで実行
-mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=importUsersJob"
-mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=exportUsersJob"
+mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=sampleTaskletJob"
+mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=usersJob"
 ```
 
-## H2DBの確認
-```shell
-H2DBサーバの起動
-java -jar h2db/h2-2.3.232.jar
+## タスクレットとは
+- 単発の処理
 
-DB接続
-http://localhost:8082/login.jsp
-
-保存済設定：Generic H2(Server)
-JDBC URL：jdbc:h2:./h2db/testdb;AUTO_SERVER=TRUE
-ユーザ名：sa
-パスワード：
-```
+## チャンクとは
+- 複数レコードの処理
 
 ## やってみよう 
 
-1. `Spring Initializr`から初期構成のアプリケーションをダウンロードする  
+### 1. `Spring Initializr`から初期構成のアプリケーションをダウンロードする  
 https://start.spring.io/
 ![initializr](initializr.png)
 
-2. 統合開発環境を使って、今動かしたソースコードと同じものを実装し、動作確認する
+### 2. 統合開発環境を使って、今動かしたソースコードと同じものを実装し、動作確認する
 > [!TIP]
 > 統合開発環境（vscode、eclipse、intelliJ）を使おう  
 >   * vscode：おススメ、最新、軽量  
 >   * eclipse：古き重き友人  
 >   * intelliJ：おススメだが、WEB開発時の`spring-boot-devtools`の自動デプロイ機能と相性が悪い。intelliJは入力する度にファイル保存されてしまうから。  
 
-3. 自分のgithubアカウントを作って、作ったソースを公開しよう
-
-4. GitHubCopilotを使ってみよう
-
-> [!TIP]
-> VS CodeでGitHub Copilot 無料版の導入　備忘録  
-> https://zenn.dev/yuta_haruna/articles/fb809e68e6bae5  
+### 3. 自分のgithubアカウントを作って、作ったソースを公開しよう
 
