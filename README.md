@@ -3,8 +3,8 @@
 Spring-Bootでバッチアプリケーション開発
 
 ## やりたいこと
-* Spring-Bootを使った効率的な開発を行い、ワンコマンドでバッチアプリケーションを起動する
-* JAVAだけがインストールされたマシンで、アプリケーションを起動する
+* Spring-Bootを使った効率的な開発を行い、ワンコマンドでバッチアプリケーションを実行する
+* JAVAだけがインストールされたマシンで、バッチアプリケーションを実行する
 * ORマッパーは`MyBatis`を使う
 * setter,getterは実装せず、`lombok`で生成する
 * アプリケーション開発は、`Spring Initializr`からデモアプリケーションをダウンロードして始める
@@ -104,6 +104,19 @@ C:.
 
 ## アプリケーションの構造
 
+![アプリケーションの構造](app.png)
+
+### タスクレットとは
+- 単発の処理
+  - テーブルデータのクリア（trancate table）
+  - デーブル間でデータ移動（insert into select）
+  - シーケンス番号の初期化
+
+### チャンクとは
+- 複数レコードの加工・編集処理
+  - 1レコードずつ、データ編集、加工
+  - チェックして結果がエラーであるレコードは、後続処理を行わず除外する
+
 ## 準備 githubからソースコードを取得
 
 gitを使ってソースコードをダウンロードする
@@ -117,16 +130,23 @@ cd spring-boot3-batch-try
 
 実行する
 ```shell
-コマンドプロンプトで実行
+タスクレットを、コマンドプロンプトで実行
 mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=sampleTaskletJob"
-mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=usersJob"
+
+出力結果
+************ hello world! ************
 ```
 
-## タスクレットとは
-- 単発の処理
+```shell
+チャンクを、コマンドプロンプトで実行
+mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=usersJob"
 
-## チャンクとは
-- 複数レコードの処理
+出力結果
+********* start ************
+Users(id=1, name=鈴木, department=営業, createdAt=2025-04-06)
+Users(id=2, name=田中, department=サービス, createdAt=2025-04-06)
+********* end **************
+```
 
 ## やってみよう 
 

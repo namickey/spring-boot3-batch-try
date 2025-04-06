@@ -22,6 +22,6 @@ public class UsersWriter implements ItemWriter<Users> {
             System.out.println(users);
         }
 
-        System.out.println("********* end ************");
+        System.out.println("********* end **************");
     }
 }

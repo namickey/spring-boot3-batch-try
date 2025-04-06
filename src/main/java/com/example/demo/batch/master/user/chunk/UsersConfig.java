@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class UsersConfig {
+    
     private final JobRepository jobRepository;
     private final SqlSessionFactory sqlSessionFactory;
     private final PlatformTransactionManager platformTransactionManager;
