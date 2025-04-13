@@ -60,6 +60,8 @@ Spring-Bootでバッチアプリケーション開発
 C:.
 │  .gitattributes
 │  .gitignore
+|  app.drawio
+|  app.png
 │  initializr.png
 │  mvnw
 │  mvnw.cmd
@@ -68,13 +70,11 @@ C:.
 ├─.mvn
 │  └─wrapper
 │          maven-wrapper.properties
-├─.vscode
-│      settings.json
 ├─h2db
 │      .gitkeep
 │      h2-2.3.232.jar
-│      testdb.mv.db
-│      testdb.trace.db
+│      testdb.mv.db    ※生成される
+│      testdb.trace.db ※生成される
 ├─src
 │  ├─main
 │  │  ├─java
@@ -90,12 +90,12 @@ C:.
 │  │  │              │          │      UsersProcessor.java
 │  │  │              │          │      UsersWriter.java
 │  │  │              │          └─tasklet
-│  │  │              │                  SampleConfig.java
+│  │  │              │                 HelloConfig.java
 │  │  │              └─common
 │  │  │                  ├─entity
 │  │  │                  │      Users.java
 │  │  │                  └─mapper
-│  │  │                          UsersMapper.java
+│  │  │                         UsersMapper.java
 │  │  └─resources
 │  │          application.properties
 │  │          data-all.sql
@@ -105,6 +105,13 @@ C:.
 ## アプリケーションの構造
 
 ![アプリケーションの構造](app.png)
+
+- Tasklet
+  - helloConfig : "hello world!"と標準出力する
+- Chunk
+  - UsersConfig : Usersテーブルをデータ取得
+  - UsersProcessor : 特に処理無し
+  - UsersWriter : 取得したデータを標準出力
 
 ### タスクレットとは
 - 単発の処理
@@ -118,7 +125,6 @@ C:.
   - チェックして結果がエラーであるレコードは、後続処理を行わず除外する
 
 ## 準備 githubからソースコードを取得
-
 gitを使ってソースコードをダウンロードする
 ```
 コマンドプロンプトで実行
@@ -127,11 +133,10 @@ cd spring-boot3-batch-try
 ```
 
 ## 実行 spring-boot:run
-
 実行する
 ```shell
 タスクレットを、コマンドプロンプトで実行
-mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=sampleTaskletJob"
+mvnw.cmd spring-boot:run -Dspring-boot.run.arguments="--spring.batch.job.name=helloJob"
 
 出力結果
 ************ hello world! ************
@@ -147,6 +152,20 @@ Users(id=1, name=鈴木, department=営業, createdAt=2025-04-06)
 Users(id=2, name=田中, department=サービス, createdAt=2025-04-06)
 ********* end **************
 ```
+
+## application.properties
+
+- データベース初期化用DDL実行モード設定
+  `spring.sql.init.mode=always`
+  - ALWAYS：常に初期化してからジョブ実行する。`schema-all.sql`、`data-all.sql`が実行される
+    - 複数ジョブを順番に動かす場合には、データが初期化されてしまうため、引継ぎができない。
+  - EMBEDDED：組み込みDBの場合のみ初期化する。`schema-all.sql`、`data-all.sql`が実行される
+  - NEVER：初期化は行わなず、何もしない。
+
+- SpringBatchの実行履歴などを管理するメタデータテーブルの初期化設定
+  `spring.batch.jdbc.initialize-schema=always`
+  - ALWAYS：常に初期化してからジョブ実行する。
+  - NEVER：初期化は行わなず、何もしない。
 
 ## やってみよう 
 

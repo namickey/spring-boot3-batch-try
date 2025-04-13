@@ -9,6 +9,7 @@ import com.example.demo.common.entity.Users;
 
 import lombok.RequiredArgsConstructor;
 
+/** ライター */
 @Component
 @RequiredArgsConstructor
 public class UsersWriter implements ItemWriter<Users> {

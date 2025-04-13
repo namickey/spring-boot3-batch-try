@@ -17,6 +17,7 @@ import com.example.demo.common.mapper.UsersMapper;
 
 import lombok.RequiredArgsConstructor;
 
+/** コンフィグ */
 @Configuration
 @RequiredArgsConstructor
 public class UsersConfig {
@@ -28,6 +29,7 @@ public class UsersConfig {
     private final UsersProcessor usersProcessor;
     private final UsersWriter usersWriter;
 
+    /** データリーダー */
     @Bean
     public ItemReader<? extends Users> userReader() {
         MyBatisCursorItemReaderBuilder<Users> reader = new MyBatisCursorItemReaderBuilder<Users>();
@@ -37,6 +39,7 @@ public class UsersConfig {
                 .build();
     }
 
+    /** ジョブ */
     @Bean
     public Job usersJob() {
         return new JobBuilder("usersJob", jobRepository)
@@ -44,6 +47,7 @@ public class UsersConfig {
                 .build();
     }
 
+    /** ステップ */
     @Bean
     public Step usersStep1() {
         return new StepBuilder("usersStep1", jobRepository)
@@ -51,7 +55,7 @@ public class UsersConfig {
                 .reader(userReader())
                 .processor(usersProcessor)
                 .writer(usersWriter)
-                .allowStartIfComplete(true) // true:何度でも再実行可能。false:一度だけ実行可能
+                .allowStartIfComplete(true) // true:実行履歴があっても何度でも再実行可能。false:一度だけ実行可能
                 .build();
     }
 }

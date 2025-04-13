@@ -12,39 +12,37 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import lombok.RequiredArgsConstructor;
 
+/** コンフィグ */
 @Configuration
 @RequiredArgsConstructor
-public class SampleConfig {
+public class HelloConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
 
+    /** タスクレット */
     @Bean
-    public Tasklet sampleTasklet() {
+    public Tasklet helloTasklet() {
         return (contribution, chunkContext) -> {
             System.out.println("************ hello world! ************");
             return null;
         };
     }
 
-    /**
-     * ジョブ
-     */
+    /** ジョブ */
     @Bean
-    public Job sampleTaskletJob() {
-        return new JobBuilder("sampleTaskletJob", jobRepository)
-                .start(sampleTaskletStep1())
+    public Job helloJob() {
+        return new JobBuilder("helloJob", jobRepository)
+                .start(helloStep())
                 .build();
     }
 
-    /**
-     * ステップ１
-     */
+    /** ステップ */
     @Bean
-    public Step sampleTaskletStep1() {
-        return new StepBuilder("sampleTaskletStep1", jobRepository)
-                .tasklet(sampleTasklet(), platformTransactionManager)
-                .allowStartIfComplete(true)
+    public Step helloStep() {
+        return new StepBuilder("helloStep", jobRepository)
+                .tasklet(helloTasklet(), platformTransactionManager)
+                .allowStartIfComplete(true)// true:実行履歴があっても何度でも再実行可能。false:一度だけ実行可能
                 .build();
     }
 }

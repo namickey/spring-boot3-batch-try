@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Select;
 
 import com.example.demo.common.entity.Users;
 
+/** ユーザマッパー */
 @Mapper
 public interface UsersMapper {
 
