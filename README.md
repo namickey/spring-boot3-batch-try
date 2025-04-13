@@ -103,15 +103,14 @@ C:.
 ```
 
 ## アプリケーションの構造
-
-![アプリケーションの構造](app.png)
-
-- Tasklet
-  - helloConfig : "hello world!"と標準出力する
-- Chunk
+- Tasklet処理
+  - HelloConfig : "hello world!"と標準出力する
+- Chunk処理
   - UsersConfig : Usersテーブルをデータ取得
   - UsersProcessor : 特に処理無し
   - UsersWriter : 取得したデータを標準出力
+
+![アプリケーションの構造](app.png)
 
 ### タスクレットとは
 - 単発の処理
@@ -155,14 +154,14 @@ Users(id=2, name=田中, department=サービス, createdAt=2025-04-06)
 
 ## application.properties
 
-- データベース初期化用DDL実行モード設定
+- データベース初期化用DDL実行モード設定  
   `spring.sql.init.mode=always`
   - ALWAYS：常に初期化してからジョブ実行する。`schema-all.sql`、`data-all.sql`が実行される
     - 複数ジョブを順番に動かす場合には、データが初期化されてしまうため、引継ぎができない。
   - EMBEDDED：組み込みDBの場合のみ初期化する。`schema-all.sql`、`data-all.sql`が実行される
   - NEVER：初期化は行わなず、何もしない。
 
-- SpringBatchの実行履歴などを管理するメタデータテーブルの初期化設定
+- SpringBatchの実行履歴などを管理するメタデータテーブルの初期化設定  
   `spring.batch.jdbc.initialize-schema=always`
   - ALWAYS：常に初期化してからジョブ実行する。
   - NEVER：初期化は行わなず、何もしない。
