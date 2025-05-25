@@ -32,16 +32,8 @@ Spring-Bootでバッチアプリケーション開発
 
 以下がインストール済みであること
 * JDK 17
+  * `JAVA_HOME`を環境変数に設定すること
 * git
-
-## 使用するフレームワーク
-
-* spring-boot3.4
-* spring-boot-starter-batch
-* mybatis
-* lombok
-* 組み込みh2データベース
-* 組み込みMaven 3
 
 > [!TIP]
 > Java環境構築(Windows版)　JDKインストール  
@@ -52,6 +44,16 @@ Spring-Bootでバッチアプリケーション開発
 > 
 > Git Bashって使ってる？Windowsで動く意外にすごい便利ツール  
 > https://www.sejuku.net/blog/72673  
+
+## 使用するフレームワーク
+
+* spring-boot3.4
+* spring-boot-starter-batch
+* mybatis
+* lombok
+* 組み込みh2データベース
+* 組み込みMaven 3
+
 
 
 ## ディレクトリ階層
